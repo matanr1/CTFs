@@ -27,13 +27,17 @@ ALEM.3
 The string ALEM.3  look a bit suspicions, let remember it.
 check the hex dump of the file and look for some patterns:
 
-pic
+![](images/pattern_file.png)
 
-we can see FF 45 maybe it a magic number?
-we found magic number of mp3 but the bytes are swapped... strange right!
+We can see F3 FF maybe it a magic number?
 
 
-let compare this file to another mp3 file -compare the strings
+After search for similar magic number i found that mp3 Magic number looks similar but the bytes are swapped... strange right!
+
+![](images/magic.png)
+
+
+Let compare this file to another mp3 file - compare the strings
 
 #####  LAME3.  -> original mp3
 #####  ALEM.3 - challenge file
