@@ -130,11 +130,11 @@ find_thE_hAttEr
 ```
 after playing with the environment vars
 i got this sentences:
-1.Enter "P_tr01l"
-2.Enter "hinT"
-3.Enter "pRnTE"
-4.in ordEr to find thE hAttEr YoU hAvE to find ALL thE 6 LinE5 
-5.Enter "do v3rifY"
+1. Enter "P_tr01l"
+2. Enter "hinT"
+3. Enter "pRnTE"
+4. in ordEr to find thE hAttEr YoU hAvE to find ALL thE 6 LinE5 
+5. Enter "do v3rifY"
 6. The hatter left no traces
 #### number 4 looks suspicious maybe we need to print the buffer and see what we got.
 
