@@ -47,9 +47,9 @@ cat best_of_time.bin | xxd -g 1 -c 20 |head
 00000064: 45 00 00 28 b0 9e 00 00 80 06 c9 84 34 23 dc 5c c0 a8 ef 84  E..(........4#.\....
 ```
 Sort the groups by the 4th byte for example:
-45 00 00 **4a**
-45 00 00  **5a**
-45 00 00   **1c**
+1. 45 00 00  **4a**
+2. 45 00 00  **5a**
+3. 45 00 00  **1c**
 
 I notice that this row
 `00002968: 45 00 00 1c 00 01 00 00 7d 11 ec 9f 1b 04 14 12 0e 07 14 14  E.......}...........`
