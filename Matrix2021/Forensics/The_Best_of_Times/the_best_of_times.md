@@ -18,9 +18,9 @@ c0 a8 ef 02 c0 a8 ef 84 45 00 00 47 b0 9d 00 00
 80 06 c9 66 34 23 dc 5c c0 a8 ef 84 45 00 00 28
 aa 31 40 00 40 06 cf f1 c0 a8 ef 84 34 23 dc 5c
 ```
-look like we have hex numbers ,so we can convert the file ,there are two options
-1.cyberchef
-2.python script
+looks like we have hex numbers ,so we can convert the file ,there are two options
+1. cyberchef
+2. python script
 ```python
 with open("dump.bin", 'r') as f:
     with open("best_of_time.bin", 'wb') as fw:
@@ -33,7 +33,8 @@ with open("dump.bin", 'r') as f:
                 break
 ```
 
-We can see a pattern  45 00 every 20 bytes
+We can see a pattern  45 00 every 20 bytes:
+
 ![](images/pattern.png)
 
 Lets arrange the bytes in groups of 20 bytes:
@@ -54,6 +55,7 @@ Sort the groups by the 4th byte for example:
 I notice that this row
 `00002968: 45 00 00 1c 00 01 00 00 7d 11 ec 9f 1b 04 14 12 0e 07 14 14  E.......}...........`
  has suspicious char  `{`
- So i tried to filter only rows with "45 00 00 1c"  and i got the flag
- ![](images/flag.png)
+ So i tried to filter only rows with "45 00 00 1c"  and i got the flag:
+ 
+![](images/flag.png)
 
