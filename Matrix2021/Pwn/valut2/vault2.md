@@ -58,16 +58,14 @@ A
 Your encrypted letter is: O
 Based on: 1820221898
 ```
-  looks like the encryption  based on input_char and random number
+Looks like the encryption based on input_char and random number so I found Formula to get the encrypted  char `(base_num + input_char  - 0x41) % 26 + 0x41`
 
-i found Formula to get the encrypted  char `(base_num + input_char  - 0x41) % 26 + 0x41`
+If i will found how the base_number that generated maybe i will know how to predict what is the next number.
+Based on hint from vault 1  `"According to our intelligence the password is 624 digits long."` i google and found this link - https://en.wikipedia.org/wiki/Mersenne_Twister.
 
-If i will found how the base_number generated maybe i will know how to predict what is the next number.
-based on hint from vault 1  `"According to our intelligence the password is 624 digits long."` i google and found this link - https://en.wikipedia.org/wiki/Mersenne_Twister
+Based on link above i found how to predict random number - https://github.com/kmyk/mersenne-twister-predictor.
 
-based on link above i found how to predict random number - https://github.com/kmyk/mersenne-twister-predictor
-
-script  to predict the next number - 
+Prediction script the next number - 
 ```python
 import socket
 import pprint
@@ -100,7 +98,7 @@ print("next_number:{predictor.getrandbits(32)})
 ```
 
 
-now we need to add decrypt function in order to decrypt the password
+Now we need to add a decrypt function in order to decrypt the password
 ```python
 def decrypt_char(base_num, char):
     for c in"ABCDEFGHIJKLMNOPQRSTUVWXYZ":
@@ -109,7 +107,7 @@ def decrypt_char(base_num, char):
     return '#'
 ```
 
-now lets put all parts together  + get the password
+Now let's put all the parts together + get the password
 
 https://gist.github.com/matanr1/76199549deef75a40e5f5e865e837ea5
 

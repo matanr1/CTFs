@@ -4,12 +4,12 @@
 
 ![](images/can_you_hear_me.png)
 
-Lets check file type:
+Lets check the file type:
 ```console
 matan@matan:~/Documents/hacking/matrix2021$ file Can_You_Hear_Me 
 Can_You_Hear_Me: data
 ```
-I tried to open it but the data was binary so let try strings:
+I tried to open it but the data was binary so lets check the strings:
 ```console
 matan@matan:~/Documents/hacking/matrix2021$ strings Can_You_Hear_Me
 D!^*#
@@ -24,25 +24,26 @@ ALEM.3
 1$00
 ALEM.3
 ```
-The string ALEM.3  look a bit suspicions, let remember it.
-check the hex dump of the file and look for some patterns:
+The string ALEM.3 looks a bit suspicions, lets remember it.
+
+I check the hex dump of the file and look for some patterns:
 
 ![](images/pattern_file.png)
 
-We can see F3 FF maybe it a magic number?
+We can see `F3 FF`, maybe it's a magic number?
 
 
-After search for similar magic number i found that mp3 Magic number looks similar but the bytes are swapped... strange right!
+After searching for similar magic number I found that mp3 Magic number looks similar but the bytes are swapped... strange right?!
 
 ![](images/magic.png)
 
 
-Let compare this file to another mp3 file - compare the strings
+Lets compare this file to another mp3 file - compare the strings
 
 #####  LAME3.  -> original mp3
 #####  ALEM.3 - challenge file
 
-We can see that every 2 bytes is swapped so let write small script that swap the bytes:
+We can see that every 2 bytes are swapped so lets write a small script that swaps the bytes:
 ```python
 #!/usr/bin/env python3
 with open("Can_You_Hear_Me", 'rb') as fr:

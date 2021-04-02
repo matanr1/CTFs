@@ -3,13 +3,13 @@
 
 ![](images/the_best_of_times.png)
 
-checks file type:
+First lets check the file type:
 ```console
 matan@matan:~/Documents/hacking/matrix2021$
 file dump.bin 
 dump.bin: ASCII text
 ```
-Checks the data:
+and check the data:
 ```console
 matan@matan:~/Documents/hacking/matrix2021$ head dump.bin 
 45 00 00 4a 31 0e 40 00 40 11 a9 bc c0 a8 ef 84
@@ -18,7 +18,8 @@ c0 a8 ef 02 c0 a8 ef 84 45 00 00 47 b0 9d 00 00
 80 06 c9 66 34 23 dc 5c c0 a8 ef 84 45 00 00 28
 aa 31 40 00 40 06 cf f1 c0 a8 ef 84 34 23 dc 5c
 ```
-looks like we have hex numbers ,so we can convert the file ,there are two options
+
+Looks like we have `hex numbers`, so we can convert the file there are two options
 1. cyberchef
 2. python script
 ```python
@@ -33,7 +34,7 @@ with open("dump.bin", 'r') as f:
                 break
 ```
 
-We can see a pattern  45 00 every 20 bytes:
+We can see a pattern  `45 00` every `20` bytes:
 
 ![](images/pattern.png)
 

@@ -17,7 +17,7 @@ find_thE_hAttEr
 
 ```
 
-open the file in ghidra an take a look on main function:
+Open the file in ghidra an take a look on main function:
 ```c
 
 undefined8 main(int param_1,undefined8 param_2)
@@ -62,9 +62,9 @@ undefined8 main(int param_1,undefined8 param_2)
 }
 ```
 
-in the beginning we call  FUN_00401350 lets reverse it.
+In the beginning we call FUN_00401350 lets reverse it.
 
-FUN_00401350() - this function update state of environment variables , lets rename this function and some vars:
+FUN_00401350() - this function update the state of environment variables , lets rename this function and some vars:
 ```c
 void update_env_vars_state(void)
 {
@@ -103,14 +103,14 @@ update_env_vars_state();
     }
   }
 ```
-it seems that when we export  each one of the env vars we can manipulate  what will be execute.
+it seems that when we export  each one of the env vars we can manipulate which function will be called.
 let reverse the first part
 ```console
 if (SHOW_PASSWORD == '\x01') {
     FUN_00401440();
   }
 ```
-rename FUN_00401440 ->show_password_func , this function invoked only in the block above.
+Rename FUN_00401440 ->show_password_func , this function invoked only in the block above.
 lets do some dynamic analyze
 ```console
 matan@matan:~/Documents/hacking/matrix2021$ export SHOW_PASSWORD=1
@@ -128,7 +128,7 @@ Enter "pRnTE"
 find_thE_hAttEr
 ...
 ```
-after playing with the environment vars
+After playing with the environment vars
 i got this sentences:
 1. Enter "P_tr01l"
 2. Enter "hinT"
@@ -138,11 +138,11 @@ i got this sentences:
 6. The hatter left no traces
 #### number 4 looks suspicious maybe we need to print the buffer and see what we got.
 
-Inside we can see that print some pic and than call to this function:
+Inside we can see that print some text pic and than call to this function:
 ```c
 FUN_004014a0(4);
 ```
-lets reverse it, we check if DEBUG exist and call another function `FUN_004014d0(4)`,lets reverse this function.
+lets reverse it, we check if DEBUG exists and call another function `FUN_004014d0(4)`,lets reverse this function.
 ```c
 void FUN_004014d0(uint param_1)
 {
@@ -161,8 +161,7 @@ void FUN_004014d0(uint param_1)
 }
 ```
 
-This function print buffer by getting index and decrypt the values
-lets see analyze the decryption 
+This function print buffer by getting index and decrypt the values,lets see how the decryption works
 ```c
 undefined decrypt_16_bytes(undefined8 *param_1,undefined8 *param_2)
 
@@ -190,12 +189,12 @@ undefined decrypt_16_bytes(undefined8 *param_1,undefined8 *param_2)
   return local_19;
 }
 ```
-seem that it first decrypt the last 4 bytes C-F:
+Seems that it's first decrypt the last 4 bytes C-F:
 `decrypt_bytes((long)param_1 + 0xc,4,bVar1);`
-0-B bytes:
+and than 0-B bytes:
 `decrypt_bytes((long)param_1,0xb,bVar1);`
 
-lets analyze decrypt_bytes:
+Let's reverse decrypt_bytes function:
 ```c
 byte decrypt_bytes(long param_1,ulong param_2,byte param_3)
 
@@ -213,7 +212,7 @@ byte decrypt_bytes(long param_1,ulong param_2,byte param_3)
   return local_19;
 }
 ```
-we can see that:
+We can see that:
 param_1 - address of buffer
 param_2 - number of actions
 param_3 - index
@@ -224,8 +223,8 @@ buffer[0] = buffer[0] ^ buffer[-1]
 buffer[1] = buffer[1] ^ buffer[0]
 ... as it goes as number of param_2
 ```
-so now we know how to decrypt the buffer let simulate it:
-1.dump the buffer from `&DAT_0040506b`
+So now we know how to decrypt the buffer so let's simulate it:
+1.Dump the buffer from `&DAT_0040506b`
 ```c
 undefined * get_pt_chnk_by_index(uint param_1)
 {
@@ -236,7 +235,7 @@ undefined * get_pt_chnk_by_index(uint param_1)
   return &DAT_00405060 + local_20 * 0x10;
 }
 ```
-2. build script in python to simulate the the decryption
+2. Build script in python to simulate the the decryption
 ```python
 messgae_size=16
 with open('buffer','rb') as f:
@@ -251,7 +250,7 @@ with open('buffer','rb') as f:
             data[i+1] ^= data[i]
         print(data)
 ```
-first result:
+First result:
 ```console
 dMp|dAtA\x00()\x00\xde\xad\xbe\xef
 do v3rifY\x00U\x01\xde\xad\xbe\xef
@@ -261,14 +260,14 @@ P_tr01l\x00BC.\x04\xde\xad\xbe\xef
 pRnTE\x00x_-W\\\x05\xde\xad\xbe\xef
 ```
 
-we can see that every sentence has more data because \x00 stop the `printf` to print the rest of the data.
+We can see that every sentence has more data because \x00 stop the `printf` to print the rest of the data.
 Every sentence can be split to 3 parts for example:
 1. do v3rifY\x00
 2. U\x01
 3. \xde\xad\xbe\xef
 
-what we should do with this information,for now anything. lets continue searching.
-we see that when we export `WHERE_IS_THE_HATTER` we call to function FUN_00401760,beside print the line above  this function do some more things like copy data to buffers and run FUN_00401260((long)local_238):
+What we should do with this information,for now anything. let's continue searching.
+We see that when we export `WHERE_IS_THE_HATTER` we call to function FUN_00401760, beside print the line above this function do some more things like copy data to buffers and run FUN_00401260((long)local_238):
 ```c
   memcpy(local_1b8,&DAT_00403210,0x28);
   memcpy(local_1b0,&DAT_00403240,0x38);
@@ -280,15 +279,16 @@ we see that when we export `WHERE_IS_THE_HATTER` we call to function FUN_0040176
   memset(local_13,0xb,0xb);
   print_message_by_index(2);
   FUN_00401260((long)local_238); //-> break here and update the the parameter
-  ```
-as part of dynamic analysis we break on ` FUN_00401260((long)local_238);` and change the RDI register
+```
+
+As part of dynamic analysis we break on ` FUN_00401260((long)local_238);` and change the RDI register
 ```asm
         0040191d 48 8d bd        LEA        RDI=>local_238,[RBP + -0x230]
                  d0 fd ff ff
         00401924 e8 37 f9        CALL       FUN_00401260                                     undefined FUN_00401260(long para
                  ff ff
 ```
-each time i change RDI to local_190,local_198 ,etc... every time it printed other sentence
+I ran it with gdb and each time i change RDI to local_190,local_198 ,etc... every time it printed other sentence
 Second result:
 ```console
 .08....9... 00 ^__^
@@ -297,9 +297,8 @@ Second result:
 ..6....2... 03  U  ||--WWW |   
 .7...B...1. 04     ||     ||  
 .A.....3... 05
-
-Now that we have all the outputs lets assmeble it with the last result.
-we need to take part 1and 2 of the first result and map it to the current result
+```
+Now, that we have all the outputs lets assmeble it with the last result.
 ```console
 .08....9... 00 ^__^
 dMp|dAtA0()
@@ -314,12 +313,12 @@ P_tr01l0BC.
 .A.....3... 05
 pRnTE0x_-W\\
 ```
-look like we assemble a mapping of the flag:
+Look like we assemble a map to flag:
 1. the numbers in the second result are indexes in the flag
-2. the first result's len fit in to the second result
+2. the first result's len fit into the second result
 
-lets map the letters to the indexes and there is the flag:-)
- index  - 0123456789ABC
+Let's map the letters to the indexes and there is the flag:-)
+index  - 0123456789ABC
 value   - MCL_T34_pAR1Y
 
   
