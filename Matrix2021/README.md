@@ -1,3 +1,3 @@
 # Matrix2021 CTF
 
-![](images/matrix_score.png)
+![](matrix_score.png)
